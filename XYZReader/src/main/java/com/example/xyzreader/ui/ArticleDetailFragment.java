@@ -142,8 +142,8 @@ public class ArticleDetailFragment extends Fragment implements
             @Override
             public void onClick(View view) {
                 startActivity(Intent.createChooser(ShareCompat.IntentBuilder.from(getActivity())
-                        .setType("text/plain")
-                        .setText("Some sample text")
+                        .setType(getString(R.string.share_text_type))
+                        .setText(getString(R.string.share_sample_text))
                         .getIntent(), getString(R.string.action_share)));
             }
         });
@@ -212,22 +212,27 @@ public class ArticleDetailFragment extends Fragment implements
             mRootView.animate().alpha(1);
             titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE));
             Date publishedDate = parsePublishedDate();
+
+            StringBuilder htmlStringBuilder = new StringBuilder();
             if (!publishedDate.before(START_OF_EPOCH.getTime())) {
-                bylineView.setText(Html.fromHtml(
-                        DateUtils.getRelativeTimeSpanString(
-                                publishedDate.getTime(),
-                                System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS,
-                                DateUtils.FORMAT_ABBREV_ALL).toString()
-                                + " by <font color='#ffffff'>"
-                                + mCursor.getString(ArticleLoader.Query.AUTHOR)
-                                + "</font>"));
+                htmlStringBuilder.append(DateUtils.getRelativeTimeSpanString(
+                        publishedDate.getTime(),
+                        System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS,
+                        DateUtils.FORMAT_ABBREV_ALL).toString());
+                htmlStringBuilder.append(" by <font color='#ffffff'>");
+                htmlStringBuilder.append(mCursor.getString(ArticleLoader.Query.AUTHOR));
+                htmlStringBuilder.append("</font>");
+
+                bylineView.setText(Html.fromHtml(htmlStringBuilder.toString()));
 
             } else {
                 // If date is before 1902, just show the string
-                bylineView.setText(Html.fromHtml(
-                        outputFormat.format(publishedDate) + " by <font color='#ffffff'>"
-                        + mCursor.getString(ArticleLoader.Query.AUTHOR)
-                                + "</font>"));
+                htmlStringBuilder.append(outputFormat.format(publishedDate));
+                htmlStringBuilder.append(" by <font color='#ffffff'>");
+                htmlStringBuilder.append( mCursor.getString(ArticleLoader.Query.AUTHOR));
+                htmlStringBuilder.append("</font>");
+
+                bylineView.setText(Html.fromHtml(htmlStringBuilder.toString()));
 
             }
             bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />")));
@@ -253,9 +258,9 @@ public class ArticleDetailFragment extends Fragment implements
                     });
         } else {
             mRootView.setVisibility(View.GONE);
-            titleView.setText("N/A");
-            bylineView.setText("N/A" );
-            bodyView.setText("N/A");
+            titleView.setText(getString(R.string.not_applicable));
+            bylineView.setText(getString(R.string.not_applicable) );
+            bodyView.setText(getString(R.string.not_applicable));
         }
     }
 

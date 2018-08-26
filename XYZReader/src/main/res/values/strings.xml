@@ -9,4 +9,9 @@
 
     <string name="up">Up</string>
 
+    <!-- Fragment Detail -->
+    <string name="share_text_type">text/plain</string>
+    <string name="share_sample_text">Some sample text</string>
+    <string name="not_applicable">N/A</string>
+
 </resources>
